@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Cadena de Markov - Digitación Pianística</title>
+
+<style>
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f0f2f5;
+    padding: 25px;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #1a1a2e;
+}
+
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 1200px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.notas {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 80px;
+    margin: 25px 0;
+}
+
+.nota {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.nota span:first-child {
+    font-size: 24px;
+}
+
+.nota span:last-child {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.flecha {
+    font-size: 50px;
+    color: #764ba2;
+}
+
+.controles {
+    text-align: center;
+    margin: 25px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+select, button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+button {
+    cursor: pointer;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+}
+
+.resultado {
+    text-align: center;
+    font-size: 18px;
+    margin-top: 20px;
+    padding: 15px;
+    background: #e8f4f8;
+    border-radius: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+tr:hover {
+    background: #f5f5f5;
+}
+
+.resaltado {
+    background: #ffd700 !important;
+    font-weight: bold;
+    color: #1a1a2e;
+}
+
+.explicacion {
+    line-height: 1.8;
+    color: #555;
+}
+
+.markov-svg {
+    width: 100%;
+    height: 550px;
+    background: linear-gradient(to bottom, #fafafa, #f0f0f0);
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    margin-top: 15px;
+}
+
+.svg-title {
+    font-size: 18px;
+    font-weight: bold;
+    fill: #333;
+}
+
+/* Estilos para las flechas y aristas */
+.edge {
+    fill: none;
+    marker-end: url(#arrowhead);
+    transition: all 0.3s ease;
+}
+
+.edge.fuerte {
+    stroke: #2ecc71;
+    stroke-width: 4;
+}
+
+.edge.media {
+    stroke: #f39c12;
+    stroke-width: 2.5;
+}
+
+.edge.baja {
+    stroke: #95a5a6;
+    stroke-width: 1.5;
+    stroke-dasharray: 6 4;
+}
+
+.edge-label {
+    font-size: 12px;
+    fill: #2c3e50;
+    font-weight: bold;
+    background: white;
+    paint-order: stroke;
+    stroke: white;
+    stroke-width: 2px;
+}
+
+/* Estilos para los nodos */
+.node circle {
+    fill: white;
+    stroke: #3498db;
+    stroke-width: 3;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    transition: all 0.3s ease;
+}
+
+.node circle:hover {
+    stroke-width: 4;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+
+.node.inicial circle {
+    fill: #fff3e0;
+    stroke: #e67e22;
+    stroke-width: 4;
+}
+
+.node.destino circle {
+    fill: #d5f4e6;
+    stroke: #27ae60;
+    stroke-width: 4;
+}
+
+.node text {
+    text-anchor: middle;
+    font-weight: bold;
+    fill: #2c3e50;
+    font-size: 14px;
+}
+
+.estado-nota {
+    font-size: 11px;
+    fill: #7f8c8d;
+}
+
+.info-panel {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border-left: 4px solid #764ba2;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎹 Cadena de Markov: Transición de Dedos Pianísticos</h1>
+
+<section class="card">
+    <h2>🎵 Contexto Musical</h2>
+    <div class="notas">
+        <div class="nota">
+            <span>Do (C3)</span>
+            <span>MIDI 48</span>
+        </div>
+        <div class="flecha">→</div>
+        <div class="nota">
+            <span>Re# (D#3)</span>
+            <span>MIDI 51</span>
+        </div>
+    </div>
+    <p class="explicacion" style="text-align: center">
+        Modelamos la <strong>probabilidad de usar cada dedo (estado 1-5)</strong> para la siguiente nota,<br>
+        dado el dedo usado en la nota actual. ¡Una verdadera Cadena de Markov!
+    </p>
+</section>
+
+<section class="card">
+    <h2>🔗 Grafo de Estados de la Cadena de Markov</h2>
+    
+    <div class="controles">
+        <label style="font-weight: bold">🎯 Estado actual (dedo en C3):</label>
+        <select id="dedoInicial">
+            <option value="1">⚡ Dedo 1 (Pulgar)</option>
+            <option value="2">✌️ Dedo 2 (Índice)</option>
+            <option value="3">🖖 Dedo 3 (Medio)</option>
+            <option value="4">🖕 Dedo 4 (Anular)</option>
+            <option value="5">👍 Dedo 5 (Meñique)</option>
+        </select>
+        <button onclick="calcular()">🔄 Simular Transición</button>
+        <button onclick="mostrarTodasTransiciones()">🌐 Mostrar Todas las Transiciones</button>
+    </div>
+
+    <svg viewBox="0 0 1100 500" class="markov-svg">
+        <defs>
+            <marker id="arrowhead" markerWidth="10" markerHeight="7"
+                    refX="9" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="#555" />
+            </marker>
+            <marker id="arrowhead-fuerte" markerWidth="10" markerHeight="7"
+                    refX="9" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="#2ecc71" />
+            </marker>
+            <radialGradient id="gradNodo">
+                <stop offset="0%" stop-color="#fff"/>
+                <stop offset="100%" stop-color="#e8eef5"/>
+            </radialGradient>
+        </defs>
+        <text x="550" y="30" text-anchor="middle" class="svg-title">
+            📊 Diagrama de Estados y Transiciones Probabilísticas
+        </text>
+        <g id="svg-aristas"></g>
+        <g id="svg-nodos"></g>
+    </svg>
+
+    <div class="resultado" id="resultado">
+        💡 Selecciona un dedo inicial y presiona "Simular Transición"
+    </div>
+</section>
+
+<section class="card">
+    <h2>📋 Matriz de Transición de Markov (5x5)</h2>
+    <p class="explicacion">
+        Cada <strong>fila i</strong> = dedo actual en C3.<br>
+        Cada <strong>columna j</strong> = probabilidad de usar dedo j para D#3.<br>
+        ➡️ <strong>La suma de cada fila es 1.0</strong>
+    </p>
+    <table id="tablaMatriz">
+        <thead>
+            <tr>
+                <th>Dedo actual ↓ / Dedo siguiente →</th>
+                <th style="background:#f0ad4e">Dedo 1</th>
+                <th style="background:#f0ad4e">Dedo 2</th>
+                <th style="background:#f0ad4e">Dedo 3</th>
+                <th style="background:#f0ad4e">Dedo 4</th>
+                <th style="background:#f0ad4e">Dedo 5</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</section>
+
+<section class="card">
+    <h2>📖 Interpretación Matemática</h2>
+    <div class="info-panel" id="lectura">
+        🔍 Selecciona un dedo inicial para ver su distribución de probabilidad.
+    </div>
+</section>
+
+<script>
+const matriz = {
+    1: [0.10, 0.40, 0.35, 0.12, 0.03],
+    2: [0.10, 0.05, 0.55, 0.25, 0.05],
+    3: [0.08, 0.00, 0.05, 0.60, 0.27],
+    4: [0.03, 0.00, 0.00, 0.07, 0.90],
+    5: [0.45, 0.25, 0.15, 0.10, 0.05]
+};
+
+// Posiciones para los 5 estados en círculo
+const posiciones = {
+    1: {x: 550, y: 80},
+    2: {x: 880, y: 200},
+    3: {x: 740, y: 420},
+    4: {x: 360, y: 420},
+    5: {x: 220, y: 200}
+};
+
+function claseProbabilidad(p) {
+    if (p >= 0.45) return "fuerte";
+    if (p >= 0.15) return "media";
+    return "baja";
+}
+
+// Función para dibujar arco entre dos nodos
+function dibujarArco(origen, destino, prob, esAutoBucle = false, dedoActual, dedoDestino, resaltar = false) {
+    const aristas = document.getElementById("svg-aristas");
+    
+    let d = "";
+    let labelX, labelY;
+    
+    if (esAutoBucle) {
+        // Auto-bucle (self-loop)
+        const radio = 45;
+        d = `M ${origen.x} ${origen.y - radio}
+             A ${radio} ${radio} 0 1 1 ${origen.x + radio} ${origen.y}
+             A ${radio} ${radio} 0 1 1 ${origen.x} ${origen.y - radio}`;
+        labelX = origen.x + 55;
+        labelY = origen.y - 35;
+    } else {
+        // Calcular ángulo y puntos de control para arco
+        const dx = destino.x - origen.x;
+        const dy = destino.y - origen.y;
+        const distancia = Math.sqrt(dx * dx + dy * dy);
+        const radio = 45;
+        
+        // Punto de inicio (desde borde del círculo)
+        const startX = origen.x + (dx / distancia) * radio;
+        const startY = origen.y + (dy / distancia) * radio;
+        
+        // Punto final (hasta borde del círculo)
+        const endX = destino.x - (dx / distancia) * radio;
+        const endY = destino.y - (dy / distancia) * radio;
+        
+        // Puntos de control para curva
+        const perpX = -dy / distancia * 50;
+        const perpY = dx / distancia * 50;
+        
+        const controlX = (origen.x + destino.x) / 2 + perpX;
+        const controlY = (origen.y + destino.y) / 2 + perpY;
+        
+        d = `M ${startX} ${startY} Q ${controlX} ${controlY} ${endX} ${endY}`;
+        labelX = (origen.x + destino.x) / 2 + perpX * 0.7;
+        labelY = (origen.y + destino.y) / 2 + perpY * 0.7;
+    }
+    
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", d);
+    let clase = claseProbabilidad(prob);
+    if (resaltar && prob > 0) clase = "fuerte";
+    path.setAttribute("class", `edge ${clase}`);
+    aristas.appendChild(path);
+    
+    if (prob > 0 && !esAutoBucle) {
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("x", labelX);
+        label.setAttribute("y", labelY - 8);
+        label.setAttribute("class", "edge-label");
+        label.setAttribute("text-anchor", "middle");
+        label.textContent = `${prob.toFixed(2)}`;
+        aristas.appendChild(label);
+    } else if (esAutoBucle && prob > 0) {
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("x", labelX);
+        label.setAttribute("y", labelY);
+        label.setAttribute("class", "edge-label");
+        label.textContent = `${prob.toFixed(2)}`;
+        aristas.appendChild(label);
+    }
+}
+
+function crearNodo(x, y, numDedo, claseExtra = "") {
+    const nodos = document.getElementById("svg-nodos");
+    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    g.setAttribute("class", `node ${claseExtra}`);
+    
+    g.innerHTML = `
+        <circle cx="${x}" cy="${y}" r="48" fill="url(#gradNodo)"></circle>
+        <text x="${x}" y="${y - 5}">Dedo ${numDedo}</text>
+        <text x="${x}" y="${y + 18}" class="estado-nota">🎵 Estado ${numDedo}</text>
+    `;
+    
+    nodos.appendChild(g);
+}
+
+function dibujarGrafo(estadoActual = null, estadoDestino = null, mostrarTodas = false) {
+    const aristas = document.getElementById("svg-aristas");
+    const nodos = document.getElementById("svg-nodos");
+    
+    aristas.innerHTML = "";
+    nodos.innerHTML = "";
+    
+    // Dibujar todos los nodos
+    for (let i = 1; i <= 5; i++) {
+        let clase = "";
+        if (estadoActual === i) clase = "inicial";
+        if (estadoDestino === i && !mostrarTodas) clase = "destino";
+        crearNodo(posiciones[i].x, posiciones[i].y, i, clase);
+    }
+    
+    // Dibujar todas las transiciones o solo las del estado actual
+    if (mostrarTodas) {
+        // Mostrar todas las transiciones de todos los estados
+        for (let origen = 1; origen <= 5; origen++) {
+            const probs = matriz[origen];
+            for (let destino = 1; destino <= 5; destino++) {
+                const prob = probs[destino - 1];
+                if (prob > 0) {
+                    const esAuto = (origen === destino);
+                    dibujarArco(posiciones[origen], posiciones[destino], prob, esAuto, origen, destino, false);
+                }
+            }
+        }
+    } else if (estadoActual) {
+        // Mostrar solo transiciones del estado actual seleccionado
+        const probs = matriz[estadoActual];
+        for (let destino = 1; destino <= 5; destino++) {
+            const prob = probs[destino - 1];
+            if (prob > 0) {
+                const esAuto = (estadoActual === destino);
+                const resaltar = (destino === estadoDestino);
+                dibujarArco(posiciones[estadoActual], posiciones[destino], prob, esAuto, estadoActual, destino, resaltar);
+            }
+        }
+    }
+}
+
+function crearTabla() {
+    const tbody = document.querySelector("#tablaMatriz tbody");
+    tbody.innerHTML = "";
+    
+    for (let dedo = 1; dedo <= 5; dedo++) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<th style="background:#e8eef5">🎹 Dedo ${dedo}</th>`;
+        
+        matriz[dedo].forEach(prob => {
+            const color = prob >= 0.45 ? '#d5f4e6' : (prob >= 0.15 ? '#fff3e0' : '#f8f9fa');
+            tr.innerHTML += `<td style="background:${color}">${prob.toFixed(2)}</td>`;
+        });
+        
+        tbody.appendChild(tr);
+    }
+}
+
+function resaltarTabla(dedoInicial, dedoDestino) {
+    const celdas = document.querySelectorAll("#tablaMatriz td");
+    celdas.forEach(td => td.classList.remove("resaltado"));
+    
+    const fila = document.querySelectorAll("#tablaMatriz tbody tr")[dedoInicial - 1];
+    if (fila) {
+        const celda = fila.querySelectorAll("td")[dedoDestino - 1];
+        if (celda) celda.classList.add("resaltado");
+    }
+}
+
+function mostrarTodasTransiciones() {
+    dibujarGrafo(null, null, true);
+    document.getElementById("resultado").innerHTML = `
+        🌐 <strong>Cadena de Markov Completa</strong><br>
+        Se muestran TODAS las transiciones posibles entre los 5 estados.
+        Cada flecha tiene su probabilidad asociada.
+    `;
+    document.getElementById("lectura").innerHTML = `
+        📊 <strong>Cadena de Markov Completa</strong><br>
+        Este grafo muestra todas las transiciones posibles en el sistema.
+        Cada nodo es un estado (dedo 1-5). Las flechas indican la probabilidad
+        de pasar de un dedo a otro (o quedarse en el mismo).<br><br>
+        ✅ La suma de probabilidades saliendo de cada nodo es 1.0.<br>
+        ✅ Las flechas más gruesas y verdes representan transiciones más probables.
+    `;
+}
+
+function calcular() {
+    const dedoInicial = Number(document.getElementById("dedoInicial").value);
+    const probs = matriz[dedoInicial];
+    
+    const maxProb = Math.max(...probs);
+    const dedoDestino = probs.indexOf(maxProb) + 1;
+    
+    dibujarGrafo(dedoInicial, dedoDestino, false);
+    
+    document.getElementById("resultado").innerHTML = `
+        🎯 <strong>Resultado de la simulación:</strong><br>
+        Desde <strong>Dedo ${dedoInicial}</strong> en C3,<br>
+        el estado más probable para D#3 es <strong style="color:#27ae60">Dedo ${dedoDestino}</strong><br>
+        con probabilidad <strong style="font-size:22px; color:#e67e22">${(maxProb * 100).toFixed(1)}%</strong>
+    `;
+    
+    document.getElementById("lectura").innerHTML = `
+        📐 <strong>Distribución de probabilidad para Dedo ${dedoInicial}:</strong><br>
+        P = [${probs.map(p => p.toFixed(2)).join(", ")}]<br><br>
+        ➡️ Esto significa: <br>
+        • Dedo 1: ${(probs[0]*100).toFixed(0)}% &nbsp;|&nbsp;
+        • Dedo 2: ${(probs[1]*100).toFixed(0)}% &nbsp;|&nbsp;
+        • Dedo 3: ${(probs[2]*100).toFixed(0)}% &nbsp;|&nbsp;
+        • Dedo 4: ${(probs[3]*100).toFixed(0)}% &nbsp;|&nbsp;
+        • Dedo 5: ${(probs[4]*100).toFixed(0)}%<br><br>
+        ✅ La <strong>cadena de Markov</strong> captura este comportamiento probabilístico.
+    `;
+    
+    resaltarTabla(dedoInicial, dedoDestino);
+}
+
+crearTabla();
+calcular();
+</script>
+</body>
+</html>

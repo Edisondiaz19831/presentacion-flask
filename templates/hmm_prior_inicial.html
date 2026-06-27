@@ -1,0 +1,843 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>HMM - Prior inicial</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/2.0.8/css/dataTables.bootstrap5.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.bootstrap5.css" rel="stylesheet">
+
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+<style>
+body {
+    background: #f4f6f8;
+}
+.container-fluid {
+    max-width: 1400px;
+}
+.card {
+    border-radius: 14px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    margin-bottom: 24px;
+}
+.metric-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #0d6efd;
+}
+.metric-label {
+    font-size: 13px;
+    color: #555;
+}
+.explanation {
+    font-size: 15px;
+    line-height: 1.7;
+}
+.formula-box {
+    background: #fff;
+    border-left: 5px solid #0d6efd;
+    padding: 18px;
+    font-size: 18px;
+}
+table.dataTable {
+    font-size: 13px;
+}
+</style>
+</head>
+
+<body>
+<div class="container-fluid py-4">
+
+<div class="card p-4">
+    <h1>HMM - Cálculo del prior inicial</h1>
+    <p class="text-muted">
+        Esta etapa calcula la probabilidad inicial de comenzar una secuencia musical con cada dedo.
+    </p>
+
+    <div class="alert alert-primary explanation">
+        <strong>Idea central:</strong><br>
+        Para calcular el prior inicial solo se toman los eventos donde <code>is_first = 1</code>.
+        Es decir, únicamente las notas que aparecen al inicio de cada secuencia musical.
+    </div>
+</div>
+
+<div class="card p-4">
+    <h2>Fórmula utilizada</h2>
+
+    <div class="formula-box">
+        $$\pi_j = P(X_1 = j)$$
+
+        $$\pi_j =
+        \frac{\#(X_1 = j) + \varepsilon}
+        {\sum_{r=1}^5 \#(X_1 = r) + 5\varepsilon}$$
+    </div>
+
+    <p class="mt-3 explanation">
+        Donde <strong>π<sub>j</sub></strong> representa la probabilidad de que una secuencia musical
+        comience usando el dedo <strong>j</strong>. El término <code>ε</code> corresponde a un pequeño
+        suavizado para evitar probabilidades nulas.
+    </p>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card p-3 text-center">
+            <div class="metric-value">2680</div>
+            <div class="metric-label">Eventos totales</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3 text-center">
+            <div class="metric-value">63</div>
+            <div class="metric-label">Datasets musicales</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3 text-center">
+            <div class="metric-value">63</div>
+            <div class="metric-label">Eventos iniciales</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3 text-center">
+            <div class="metric-value">0.001</div>
+            <div class="metric-label">Epsilon</div>
+        </div>
+    </div>
+</div>
+
+<div class="card p-4">
+    <h2>Resumen</h2>
+    <table border="1" class="dataframe table table-striped table-bordered table-hover table-sm" id="tabla_resumen">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Métrica</th>
+      <th>Valor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Total eventos del dataset</td>
+      <td>2680.000</td>
+    </tr>
+    <tr>
+      <td>Total datasets musicales</td>
+      <td>63.000</td>
+    </tr>
+    <tr>
+      <td>Eventos iniciales usados para prior</td>
+      <td>63.000</td>
+    </tr>
+    <tr>
+      <td>Total conteos iniciales</td>
+      <td>63.000</td>
+    </tr>
+    <tr>
+      <td>Número de estados/dedos</td>
+      <td>5.000</td>
+    </tr>
+    <tr>
+      <td>Epsilon de suavizado</td>
+      <td>0.001</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="card p-4">
+    <h2>Conteo y probabilidad inicial por dedo</h2>
+    <p class="text-muted">
+        Esta tabla muestra cuántas secuencias comenzaron con cada dedo y la probabilidad inicial resultante.
+    </p>
+    <table border="1" class="dataframe table table-striped table-bordered table-hover table-sm" id="tabla_prior">
+  <thead>
+    <tr style="text-align: right;">
+      <th>finger</th>
+      <th>conteo</th>
+      <th>epsilon</th>
+      <th>numerador</th>
+      <th>denominador</th>
+      <th>probabilidad</th>
+      <th>porcentaje</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>39</td>
+      <td>0.001</td>
+      <td>39.001</td>
+      <td>63.005</td>
+      <td>0.619014</td>
+      <td>61.90%</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>5</td>
+      <td>0.001</td>
+      <td>5.001</td>
+      <td>63.005</td>
+      <td>0.079375</td>
+      <td>7.94%</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>14</td>
+      <td>0.001</td>
+      <td>14.001</td>
+      <td>63.005</td>
+      <td>0.222220</td>
+      <td>22.22%</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0</td>
+      <td>0.001</td>
+      <td>0.001</td>
+      <td>63.005</td>
+      <td>0.000016</td>
+      <td>0.00%</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>5</td>
+      <td>0.001</td>
+      <td>5.001</td>
+      <td>63.005</td>
+      <td>0.079375</td>
+      <td>7.94%</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="card p-4">
+    <h2>Eventos iniciales usados para calcular el prior</h2>
+    <p class="text-muted">
+        Estos son los eventos reales del dataset donde <code>is_first = 1</code>.
+    </p>
+    <table border="1" class="dataframe table table-striped table-bordered table-hover table-sm" id="tabla_eventos">
+  <thead>
+    <tr style="text-align: right;">
+      <th>id</th>
+      <th>dataset_id</th>
+      <th>dataset_name</th>
+      <th>order</th>
+      <th>finger</th>
+      <th>is_first</th>
+      <th>ctx_key</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>1</td>
+      <td>13.cinco dedos ambas manos</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=step_up|dir_prev=none|dir_next=up|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>274</td>
+      <td>10</td>
+      <td>22_23.Cinco dedos ambas manos notas repetidas</td>
+      <td>1</td>
+      <td>3</td>
+      <td>1</td>
+      <td>mp=none|mn=repeat|dir_prev=none|dir_next=repeat|size_prev=none|size_next=repeat|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>339</td>
+      <td>11</td>
+      <td>24.cinco dedos notas repetidas derecha sola izquierda</td>
+      <td>1</td>
+      <td>3</td>
+      <td>1</td>
+      <td>mp=none|mn=repeat|dir_prev=none|dir_next=repeat|size_prev=none|size_next=repeat|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>370</td>
+      <td>12</td>
+      <td>25_26 notas simultaneas ambas manos</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=repeat|dir_prev=none|dir_next=repeat|size_prev=none|size_next=repeat|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>379</td>
+      <td>13</td>
+      <td>32_33 Extension D E F G A</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=step_up|dir_prev=none|dir_next=up|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>420</td>
+      <td>14</td>
+      <td>34 Extencion DEFGA&nbsp;&nbsp;2.</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=step_up|dir_prev=none|dir_next=up|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>461</td>
+      <td>15</td>
+      <td>35_36 Extencion FGABC</td>
+      <td>1</td>
+      <td>5</td>
+      <td>1</td>
+      <td>mp=none|mn=step_down|dir_prev=none|dir_next=down|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>501</td>
+      <td>16</td>
+      <td>37 Extencion FGABC 2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=skip_up|dir_prev=none|dir_next=up|size_prev=none|size_next=skip|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>539</td>
+      <td>17</td>
+      <td>38 39 sustitucion de dedos una octava</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=step_up|dir_prev=none|dir_next=up|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>597</td>
+      <td>18</td>
+      <td>40 41 estiramiento pulgar indice</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=skip_up|dir_prev=none|dir_next=up|size_prev=none|size_next=skip|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>655</td>
+      <td>19</td>
+      <td>42.Acordes C F G C</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=repeat|dir_prev=none|dir_next=repeat|size_prev=none|size_next=repeat|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>22</td>
+      <td>2</td>
+      <td>14.cinco dedos ambas manos</td>
+      <td>1</td>
+      <td>5</td>
+      <td>1</td>
+      <td>mp=none|mn=step_down|dir_prev=none|dir_next=down|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>659</td>
+      <td>20</td>
+      <td>43 acordes C F C G otra posicion</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=repeat|dir_prev=none|dir_next=repeat|size_prev=none|size_next=repeat|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>663</td>
+      <td>21</td>
+      <td>43_1pieza</td>
+      <td>1</td>
+      <td>3</td>
+      <td>1</td>
+      <td>mp=none|mn=repeat|dir_prev=none|dir_next=repeat|size_prev=none|size_next=repeat|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>734</td>
+      <td>22</td>
+      <td>43_Arpegios de tres Notas Basico</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=skip_up|dir_prev=none|dir_next=up|size_prev=none|size_next=skip|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>778</td>
+      <td>23</td>
+      <td>50.Ejercicio deBeyer</td>
+      <td>1</td>
+      <td>3</td>
+      <td>1</td>
+      <td>mp=none|mn=skip_down|dir_prev=none|dir_next=down|size_prev=none|size_next=skip|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>838</td>
+      <td>24</td>
+      <td>48. 5 dedos d eec a g corcheas</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=leap_up|dir_prev=none|dir_next=up|size_prev=none|size_next=leap|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>874</td>
+      <td>25</td>
+      <td>49. 5 dedos d eec a g corcheas</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=step_up|dir_prev=none|dir_next=up|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>931</td>
+      <td>26</td>
+      <td>51.5dedos a 3 cuartos</td>
+      <td>1</td>
+      <td>3</td>
+      <td>1</td>
+      <td>mp=none|mn=skip_down|dir_prev=none|dir_next=down|size_prev=none|size_next=skip|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1006</td>
+      <td>27</td>
+      <td>51_2 ACRDE CFG</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=step_down|dir_prev=none|dir_next=down|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1013</td>
+      <td>28</td>
+      <td>51_3Himnoalegria</td>
+      <td>1</td>
+      <td>3</td>
+      <td>1</td>
+      <td>mp=none|mn=repeat|dir_prev=none|dir_next=repeat|size_prev=none|size_next=repeat|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1159</td>
+      <td>29</td>
+      <td>52.Sustitucion de dedos una octava Corcheas__</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=step_up|dir_prev=none|dir_next=up|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>52</td>
+      <td>3</td>
+      <td>15.cinco dedos ambas manos</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=leap_up|dir_prev=none|dir_next=up|size_prev=none|size_next=leap|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1217</td>
+      <td>30</td>
+      <td>52_1Acorde de la</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=none|dir_prev=none|dir_next=none|size_prev=none|size_next=none|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1218</td>
+      <td>31</td>
+      <td>52_1Acorde de la__</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=step_down|dir_prev=none|dir_next=down|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1220</td>
+      <td>32</td>
+      <td>52_1Acorde de la__</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=repeat|dir_prev=none|dir_next=repeat|size_prev=none|size_next=repeat|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1223</td>
+      <td>33</td>
+      <td>54.ACORDES I VI IV V I</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=repeat|dir_prev=none|dir_next=repeat|size_prev=none|size_next=repeat|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1228</td>
+      <td>34</td>
+      <td>54_1Pieza tuvoz</td>
+      <td>1</td>
+      <td>5</td>
+      <td>1</td>
+      <td>mp=none|mn=step_down|dir_prev=none|dir_next=down|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1358</td>
+      <td>35</td>
+      <td>53_acordesCAFG</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=repeat|dir_prev=none|dir_next=repeat|size_prev=none|size_next=repeat|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1366</td>
+      <td>36</td>
+      <td>55_56Extencion ABCDE</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=leap_up|dir_prev=none|dir_next=up|size_prev=none|size_next=leap|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1399</td>
+      <td>37</td>
+      <td>57_Ejercicio57</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=skip_up|dir_prev=none|dir_next=up|size_prev=none|size_next=skip|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1419</td>
+      <td>38</td>
+      <td>59_1extabcde</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=leap_up|dir_prev=none|dir_next=up|size_prev=none|size_next=leap|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1455</td>
+      <td>39</td>
+      <td>59_1EXTDEFGA</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=leap_up|dir_prev=none|dir_next=up|size_prev=none|size_next=leap|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>118</td>
+      <td>4</td>
+      <td>16.cinco dedos ambas manos</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=step_up|dir_prev=none|dir_next=up|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1491</td>
+      <td>40</td>
+      <td>59_2extCDEFG</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=leap_up|dir_prev=none|dir_next=up|size_prev=none|size_next=leap|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1527</td>
+      <td>41</td>
+      <td>60_62pasopulgar2dedo</td>
+      <td>1</td>
+      <td>2</td>
+      <td>1</td>
+      <td>mp=none|mn=step_down|dir_prev=none|dir_next=down|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1555</td>
+      <td>42</td>
+      <td>60_62pasopulgar3dedo</td>
+      <td>1</td>
+      <td>3</td>
+      <td>1</td>
+      <td>mp=none|mn=step_down|dir_prev=none|dir_next=down|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1583</td>
+      <td>43</td>
+      <td>61_63pasopulgar2dedo</td>
+      <td>1</td>
+      <td>2</td>
+      <td>1</td>
+      <td>mp=none|mn=step_up|dir_prev=none|dir_next=up|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1611</td>
+      <td>44</td>
+      <td>61_63pasopulgar3dedo</td>
+      <td>1</td>
+      <td>3</td>
+      <td>1</td>
+      <td>mp=none|mn=step_up|dir_prev=none|dir_next=up|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1639</td>
+      <td>45</td>
+      <td>64_665Pasopulgargeneral</td>
+      <td>1</td>
+      <td>3</td>
+      <td>1</td>
+      <td>mp=none|mn=step_down|dir_prev=none|dir_next=down|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1664</td>
+      <td>46</td>
+      <td>66_67 pasopulgargral2</td>
+      <td>1</td>
+      <td>2</td>
+      <td>1</td>
+      <td>mp=none|mn=step_up|dir_prev=none|dir_next=up|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1713</td>
+      <td>47</td>
+      <td>68.ekercicioconpasopulgar</td>
+      <td>1</td>
+      <td>3</td>
+      <td>1</td>
+      <td>mp=none|mn=step_down|dir_prev=none|dir_next=down|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1770</td>
+      <td>48</td>
+      <td>69.ejercicioDuvernoy</td>
+      <td>1</td>
+      <td>5</td>
+      <td>1</td>
+      <td>mp=none|mn=step_down|dir_prev=none|dir_next=down|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1836</td>
+      <td>49</td>
+      <td>69.ACORDES 1 6 2 5</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=repeat|dir_prev=none|dir_next=repeat|size_prev=none|size_next=repeat|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>159</td>
+      <td>5</td>
+      <td>17.cinco dedos ambas manos</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=step_up|dir_prev=none|dir_next=up|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1841</td>
+      <td>50</td>
+      <td>70.safari</td>
+      <td>1</td>
+      <td>3</td>
+      <td>1</td>
+      <td>mp=none|mn=repeat|dir_prev=none|dir_next=repeat|size_prev=none|size_next=repeat|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>1957</td>
+      <td>51</td>
+      <td>71.Ejercicio Paso Pulgar</td>
+      <td>1</td>
+      <td>3</td>
+      <td>1</td>
+      <td>mp=none|mn=skip_down|dir_prev=none|dir_next=down|size_prev=none|size_next=skip|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>2029</td>
+      <td>52</td>
+      <td>72.Ejercicio_Paso Pulgar</td>
+      <td>1</td>
+      <td>3</td>
+      <td>1</td>
+      <td>mp=none|mn=skip_up|dir_prev=none|dir_next=up|size_prev=none|size_next=skip|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>2105</td>
+      <td>53</td>
+      <td>73.Arpegios izq y melodia derecha</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=leap_up|dir_prev=none|dir_next=up|size_prev=none|size_next=leap|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>2214</td>
+      <td>54</td>
+      <td>74.acordes y paso de pulgar</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=repeat|dir_prev=none|dir_next=repeat|size_prev=none|size_next=repeat|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>2310</td>
+      <td>55</td>
+      <td>75_76 ejercicio_con_sostenidos</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=step_up|dir_prev=none|dir_next=up|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>2367</td>
+      <td>56</td>
+      <td>76_1.calamity_jane</td>
+      <td>1</td>
+      <td>2</td>
+      <td>1</td>
+      <td>mp=none|mn=skip_up|dir_prev=none|dir_next=up|size_prev=none|size_next=skip|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>2477</td>
+      <td>57</td>
+      <td>77.acordes I IV II V I</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=step_up|dir_prev=none|dir_next=up|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>2482</td>
+      <td>58</td>
+      <td>77_1.acordes I IV II V I</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=repeat|dir_prev=none|dir_next=repeat|size_prev=none|size_next=repeat|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>2492</td>
+      <td>59</td>
+      <td>77_2acorede</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=skip_up|dir_prev=none|dir_next=up|size_prev=none|size_next=skip|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>177</td>
+      <td>6</td>
+      <td>18.cinco dedos ambas manos</td>
+      <td>1</td>
+      <td>5</td>
+      <td>1</td>
+      <td>mp=none|mn=step_down|dir_prev=none|dir_next=down|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>2507</td>
+      <td>60</td>
+      <td>77_3acordes_polu</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=skip_up|dir_prev=none|dir_next=up|size_prev=none|size_next=skip|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>2522</td>
+      <td>61</td>
+      <td>77_4arpegios</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=leap_up|dir_prev=none|dir_next=up|size_prev=none|size_next=leap|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>2562</td>
+      <td>62</td>
+      <td>78_79_sustitucion dedos</td>
+      <td>1</td>
+      <td>2</td>
+      <td>1</td>
+      <td>mp=none|mn=repeat|dir_prev=none|dir_next=repeat|size_prev=none|size_next=repeat|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>2627</td>
+      <td>63</td>
+      <td>80_ejercicio paso pulgar</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=step_up|dir_prev=none|dir_next=up|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>205</td>
+      <td>7</td>
+      <td>19.cinco dedos ambas manos</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=step_up|dir_prev=none|dir_next=up|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>228</td>
+      <td>8</td>
+      <td>20.cinco dedos ambas manos</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>mp=none|mn=step_up|dir_prev=none|dir_next=up|size_prev=none|size_next=step|black=0|run=edge</td>
+    </tr>
+    <tr>
+      <td>251</td>
+      <td>9</td>
+      <td>21.cinco dedos ambas manos</td>
+      <td>1</td>
+      <td>3</td>
+      <td>1</td>
+      <td>mp=none|mn=skip_up|dir_prev=none|dir_next=up|size_prev=none|size_next=skip|black=0|run=edge</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.bootstrap5.js"></script>
+
+<script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.bootstrap5.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.print.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<script>
+const config = {
+    pageLength: 10,
+    lengthMenu: [10, 25, 50, 100],
+    dom: 'Bfrtip',
+    buttons: ['copy', 'csv', 'excel', 'print'],
+    language: {
+        url: 'https://cdn.datatables.net/plug-ins/2.0.8/i18n/es-ES.json'
+    }
+};
+
+new DataTable('#tabla_resumen', config);
+new DataTable('#tabla_prior', config);
+new DataTable('#tabla_eventos', config);
+</script>
+
+</body>
+</html>

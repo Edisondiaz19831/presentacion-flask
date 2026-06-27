@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predictor de Digitación para Piano</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            color: #333;
+            min-width: 120px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            min-width: 200px;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .btn-primary {
+            background: #667eea;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: #48bb78;
+        }
+
+        .btn-success:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #fc8181;
+        }
+
+        .btn-danger:hover {
+            background: #f56565;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #a0aec0;
+        }
+
+        .btn-secondary:hover {
+            background: #718096;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .result-section {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .result-section.active {
+            display: block;
+        }
+
+        .step-info {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .step-info h3 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .step-info .details {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .candidates-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+
+        .candidates-table th {
+            background: #667eea;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .candidates-table td {
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .candidates-table tr:hover {
+            background: #f7fafc;
+        }
+
+        .candidates-table .highlight {
+            background: #fefcbf;
+            font-weight: 600;
+        }
+
+        .route-display {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 20px;
+            text-align: center;
+            border: 2px solid #667eea;
+            word-wrap: break-word;
+        }
+
+        .route-display .arrow {
+            color: #667eea;
+            margin: 0 5px;
+        }
+
+        .route-display .current {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        .status-message {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+
+        .status-info {
+            background: #bee3f8;
+            color: #2b6cb0;
+            border: 1px solid #90cdf4;
+        }
+
+        .status-success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+
+        .status-warning {
+            background: #fefcbf;
+            color: #975a16;
+            border: 1px solid #f6e05e;
+        }
+
+        .status-error {
+            background: #fed7d7;
+            color: #9b2c2c;
+            border: 1px solid #feb2b2;
+        }
+
+        .historical-options {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid #e2e8f0;
+        }
+
+        .historical-options h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .finger-option {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 5px;
+            background: #667eea;
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .finger-option:hover {
+            transform: scale(1.1);
+            background: #5a67d8;
+        }
+
+        .finger-option.selected {
+            background: #48bb78;
+            box-shadow: 0 0 0 3px #48bb78, 0 0 0 6px #c6f6d5;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .input-group label {
+                min-width: auto;
+            }
+            
+            .input-group input {
+                min-width: auto;
+            }
+            
+            .route-display {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎹 Predictor de Digitación</h1>
+        <p class="subtitle">Sistema interactivo de predicción de digitación para piano</p>
+
+        <!-- Sección de entrada -->
+        <div id="inputSection" class="input-section">
+            <div class="input-group">
+                <label for="dedoInicial">Dedo inicial:</label>
+                <input type="number" id="dedoInicial" value="1" min="1" max="5">
+            </div>
+            <div class="input-group">
+                <label for="secuenciaMIDI">Secuencia MIDI:</label>
+                <input type="text" id="secuenciaMIDI" placeholder="Ej: 60,62,63,64,65" value="60,62,63,64,65">
+            </div>
+            <button class="btn btn-primary" id="btnIniciar" onclick="iniciarPrediccion()">
+                🚀 Iniciar Predicción
+            </button>
+        </div>
+
+        <!-- Sección de resultados -->
+        <div id="resultSection" class="result-section">
+            <div class="progress-bar">
+                <div class="progress" id="progressBar" style="width: 0%"></div>
+            </div>
+
+            <!-- Ruta actual -->
+            <div class="route-display" id="routeDisplay">
+                <span id="routeText">Esperando inicio...</span>
+            </div>
+
+            <!-- Estado -->
+            <div id="statusMessage" class="status-message status-info">
+                Iniciando predicción...
+            </div>
+
+            <!-- Información del paso -->
+            <div class="step-info" id="stepInfo">
+                <h3>Paso <span id="stepNumber">0</span> de <span id="totalSteps">0</span></h3>
+                <div class="details">
+                    <strong>MIDI:</strong> <span id="midiActual">-</span> | 
+                    <strong>Contexto:</strong> <span id="contextoActual">-</span>
+                </div>
+            </div>
+
+            <!-- Candidatos del modelo -->
+            <div id="candidatosSection">
+                <h4>📊 Ranking del modelo (A × B)</h4>
+                <table class="candidates-table" id="candidatesTable">
+                    <thead>
+                        <tr>
+                            <th>Dedo</th>
+                            <th>Probabilidad Transición (A)</th>
+                            <th>Probabilidad Emisión (B)</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="candidatesBody">
+                        <tr><td colspan="4">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Opciones históricas -->
+            <div id="historicalSection" style="display: none;">
+                <div class="historical-options">
+                    <h4>📚 Opciones históricas disponibles</h4>
+                    <div id="historicalOptionsContainer">
+                        <p>Cargando opciones históricas...</p>
+                    </div>
+                </div>
+
+                <div id="historicalDetail" style="margin-top: 10px; display: none;">
+                    <h4>📋 Detalle de coincidencias históricas</h4>
+                    <div id="historicalDetailContainer"></div>
+                </div>
+            </div>
+
+            <!-- Botones de interacción -->
+            <div id="interactionSection" style="display: none;">
+                <div class="btn-group" id="fingerButtons">
+                    <!-- Botones dinámicos -->
+                </div>
+                <button class="btn btn-secondary" id="btnUsarModelo" onclick="usarModelo()">
+                    Usar Modelo (Automático)
+                </button>
+            </div>
+
+            <!-- Botón de siguiente paso (automático) -->
+            <div id="autoContinue" style="display: none;">
+                <button class="btn btn-success" onclick="continuarAutomatico()">
+                    ⏭️ Continuar
+                </button>
+            </div>
+
+            <!-- Botón de reinicio -->
+            <div style="margin-top: 20px;">
+                <button class="btn btn-danger" onclick="reiniciar()">
+                    🔄 Reiniciar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let estado = {
+            ruta: [],
+            pasoActual: 0,
+            totalPasos: 0,
+            enProceso: false,
+            esperandoInteraccion: false,
+            opcionesDisponibles: [],
+            dedoModelo: null
+        };
+
+        async function iniciarPrediccion() {
+            const dedoInicial = document.getElementById('dedoInicial').value;
+            const secuencia = document.getElementById('secuenciaMIDI').value.trim();
+
+            if (!dedoInicial || dedoInicial < 1 || dedoInicial > 5) {
+                alert('Por favor, ingresa un dedo inicial válido (1-5)');
+                return;
+            }
+
+            if (!secuencia) {
+                alert('Por favor, ingresa una secuencia MIDI');
+                return;
+            }
+
+            // Validar secuencia
+            const notas = secuencia.split(',').map(x => parseInt(x.trim()));
+            if (notas.some(isNaN)) {
+                alert('La secuencia debe contener solo números separados por comas');
+                return;
+            }
+
+            // Deshabilitar botón de inicio
+            document.getElementById('btnIniciar').disabled = true;
+            document.getElementById('btnIniciar').textContent = '⏳ Procesando...';
+
+            try {
+                const response = await fetch('/iniciar', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        dedo_inicial: parseInt(dedoInicial),
+                        secuencia: secuencia
+                    })
+                });
+
+                const data = await response.json();
+                
+                // Mostrar sección de resultados
+                document.getElementById('resultSection').classList.add('active');
+                
+                // Inicializar estado
+                estado.ruta = data.ruta;
+                estado.pasoActual = 0;
+                estado.totalPasos = data.eventos.length;
+                estado.enProceso = true;
+                estado.esperandoInteraccion = false;
+
+                // Actualizar UI
+                actualizarRuta();
+                actualizarProgreso();
+
+                // Mostrar primer paso
+                await procesarSiguientePaso();
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al iniciar la predicción. Verifica la conexión a la base de datos.');
+            } finally {
+                document.getElementById('btnIniciar').disabled = false;
+                document.getElementById('btnIniciar').textContent = '🚀 Iniciar Predicción';
+            }
+        }
+
+        async function procesarSiguientePaso() {
+            if (!estado.enProceso) return;
+
+            try {
+                const response = await fetch('/siguiente_paso', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({})
+                });
+
+                const data = await response.json();
+
+                if (data.completado) {
+                    finalizarPrediccion(data.ruta);
+                    return;
+                }
+
+                if (data.necesita_interaccion) {
+                    // Mostrar opciones para interacción
+                    mostrarInteraccion(data);
+                } else {
+                    // Avance automático
+                    await avanceAutomatico(data);
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarMensaje('Error al procesar el paso', 'error');
+            }
+        }
+
+        function mostrarInteraccion(data) {
+            estado.esperandoInteraccion = true;
+            estado.opcionesDisponibles = data.opciones_disponibles;
+            estado.dedoModelo = data.dedo_modelo;
+
+            // Actualizar información del paso
+            document.getElementById('stepNumber').textContent = data.paso_actual + 1;
+            document.getElementById('totalSteps').textContent = estado.totalPasos;
+            document.getElementById('midiActual').textContent = data.midi_actual;
+            document.getElementById('contextoActual').textContent = data.ctx;
+
+            // Mostrar candidatos
+            mostrarCandidatos(data.candidatos);
+
+            // Mostrar opciones históricas
+            mostrarOpcionesHistoricas(data.opciones_historicas, data.detalle_historico);
+
+            // Mostrar mensaje
+            mostrarMensaje(data.mensaje, 'warning');
+
+            // Mostrar botones de interacción
+            const interactionSection = document.getElementById('interactionSection');
+            interactionSection.style.display = 'block';
+
+            const fingerButtons = document.getElementById('fingerButtons');
+            fingerButtons.innerHTML = '';
+
+            data.opciones_disponibles.forEach(dedo => {
+                const btn = document.createElement('button');
+                btn.className = 'btn btn-primary';
+                btn.textContent = `Dedo ${dedo}`;
+                btn.onclick = () => elegirDedo(dedo);
+                fingerButtons.appendChild(btn);
+            });
+
+            // Botón "Usar Modelo"
+            document.getElementById('btnUsarModelo').style.display = 'block';
+            document.getElementById('btnUsarModelo').textContent = `Usar Modelo (Dedo ${data.dedo_modelo})`;
+        }
+
+        async function avanceAutomatico(data) {
+            estado.ruta = data.ruta;
+            estado.pasoActual = data.paso_actual || estado.pasoActual + 1;
+
+            // Actualizar UI
+            actualizarRuta();
+            actualizarProgreso();
+
+            // Mostrar mensaje
+            mostrarMensaje(data.mensaje, 'success');
+
+            // Ocultar sección de interacción
+            document.getElementById('interactionSection').style.display = 'none';
+            document.getElementById('autoContinue').style.display = 'none';
+
+            // Si no está completado, continuar
+            if (!data.completado) {
+                setTimeout(() => procesarSiguientePaso(), 500);
+            } else {
+                finalizarPrediccion(data.ruta);
+            }
+        }
+
+        async function elegirDedo(dedo) {
+            if (!estado.esperandoInteraccion) return;
+
+            try {
+                const response = await fetch('/elegir_dedo', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ dedo_elegido: dedo })
+                });
+
+                const data = await response.json();
+
+                estado.ruta = data.ruta;
+                estado.pasoActual = data.paso_actual;
+                estado.esperandoInteraccion = false;
+
+                // Actualizar UI
+                actualizarRuta();
+                actualizarProgreso();
+                mostrarMensaje(`✅ Dedo ${dedo} seleccionado`, 'success');
+
+                // Ocultar interacción
+                document.getElementById('interactionSection').style.display = 'none';
+                document.getElementById('historicalSection').style.display = 'none';
+
+                if (data.completado) {
+                    finalizarPrediccion(data.ruta);
+                } else {
+                    setTimeout(() => procesarSiguientePaso(), 800);
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarMensaje('Error al seleccionar el dedo', 'error');
+            }
+        }
+
+        async function usarModelo() {
+            if (estado.dedoModelo !== null) {
+                await elegirDedo(estado.dedoModelo);
+            }
+        }
+
+        async function continuarAutomatico() {
+            document.getElementById('autoContinue').style.display = 'none';
+            await procesarSiguientePaso();
+        }
+
+        function finalizarPrediccion(ruta) {
+            estado.enProceso = false;
+            mostrarMensaje('✅ Predicción completada con éxito!', 'success');
+            document.getElementById('interactionSection').style.display = 'none';
+            document.getElementById('autoContinue').style.display = 'none';
+            document.getElementById('historicalSection').style.display = 'none';
+            
+            actualizarRuta();
+            actualizarProgreso();
+
+            // Mostrar mensaje final
+            const routeDisplay = document.getElementById('routeDisplay');
+            routeDisplay.innerHTML = `
+                <div style="font-size: 16px; color: #48bb78; margin-bottom: 10px;">
+                    🎉 ¡Digitación completa!
+                </div>
+                <div style="font-size: 24px; font-weight: bold;">
+                    ${ruta.join(' → ')}
+                </div>
+            `;
+        }
+
+        function actualizarRuta() {
+            const routeDisplay = document.getElementById('routeDisplay');
+            const ruta = estado.ruta;
+            
+            if (ruta.length === 0) {
+                routeDisplay.innerHTML = '<span style="color: #999;">Esperando inicio...</span>';
+                return;
+            }
+
+            let html = '';
+            ruta.forEach((dedo, index) => {
+                if (index > 0) html += ' <span class="arrow">→</span> ';
+                const isCurrent = index === ruta.length - 1 && estado.enProceso;
+                if (isCurrent) {
+                    html += `<span class="current">${dedo}</span>`;
+                } else {
+                    html += `<span>${dedo}</span>`;
+                }
+            });
+            
+            routeDisplay.innerHTML = html;
+        }
+
+        function actualizarProgreso() {
+            const progress = estado.totalPasos > 0 ? 
+                (estado.pasoActual / estado.totalPasos) * 100 : 0;
+            document.getElementById('progressBar').style.width = Math.min(progress, 100) + '%';
+        }
+
+        function mostrarCandidatos(candidatos) {
+            const tbody = document.getElementById('candidatesBody');
+            tbody.innerHTML = '';
+            
+            candidatos.forEach((c, index) => {
+                const row = document.createElement('tr');
+                if (index === 0) row.className = 'highlight';
+                
+                row.innerHTML = `
+                    <td><strong>${c.dedo}</strong></td>
+                    <td>${c.A.toFixed(4)}</td>
+                    <td>${c.B.toFixed(4)}</td>
+                    <td><strong>${c.score.toFixed(4)}</strong></td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        function mostrarOpcionesHistoricas(opciones, detalle) {
+            const section = document.getElementById('historicalSection');
+            const container = document.getElementById('historicalOptionsContainer');
+            
+            if (!opciones || opciones.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+
+            section.style.display = 'block';
+            
+            let html = '<div style="display: flex; flex-wrap: wrap; gap: 10px;">';
+            opciones.forEach(op => {
+                html += `
+                    <div style="background: #f0f4ff; padding: 10px 15px; border-radius: 8px; border: 2px solid #667eea;">
+                        <strong>Dedo ${op.siguiente_dedo}</strong>
+                        <span style="color: #666; font-size: 12px; display: block;">
+                            ${op.veces} coincidencia${op.veces > 1 ? 's' : ''}
+                        </span>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            container.innerHTML = html;
+
+            // Mostrar detalle si existe
+            if (detalle && detalle.length > 0) {
+                const detailDiv = document.getElementById('historicalDetailContainer');
+                let detailHtml = '<div style="max-height: 200px; overflow-y: auto;">';
+                detailHtml += '<table class="candidates-table">';
+                detailHtml += '<thead><tr><th>Dataset</th><th>MIDI</th><th>Dedo</th></tr></thead>';
+                detailHtml += '<tbody>';
+                detalle.slice(0, 10).forEach(item => {
+                    detailHtml += `
+                        <tr>
+                            <td>${item.dataset_id}</td>
+                            <td>${item.midi_actual_historico}</td>
+                            <td><strong>${item.dedo_actual_historico}</strong></td>
+                        </tr>
+                    `;
+                });
+                detailHtml += '</tbody></table></div>';
+                
+                document.getElementById('historicalDetailContainer').innerHTML = detailHtml;
+                document.getElementById('historicalDetail').style.display = 'block';
+            } else {
+                document.getElementById('historicalDetail').style.display = 'none';
+            }
+        }
+
+        function mostrarMensaje(mensaje, tipo = 'info') {
+            const div = document.getElementById('statusMessage');
+            div.textContent = mensaje;
+            div.className = `status-message status-${tipo}`;
+        }
+
+        function reiniciar() {
+            estado = {
+                ruta: [],
+                pasoActual: 0,
+                totalPasos: 0,
+                enProceso: false,
+                esperandoInteraccion: false,
+                opcionesDisponibles: [],
+                dedoModelo: null
+            };
+
+            document.getElementById('resultSection').classList.remove('active');
+            document.getElementById('interactionSection').style.display = 'none';
+            document.getElementById('historicalSection').style.display = 'none';
+            document.getElementById('autoContinue').style.display = 'none';
+            document.getElementById('btnIniciar').disabled = false;
+            document.getElementById('btnIniciar').textContent = '🚀 Iniciar Predicción';
+            
+            // Resetear display de ruta
+            document.getElementById('routeDisplay').innerHTML = '<span style="color: #999;">Esperando inicio...</span>';
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('candidatesBody').innerHTML = '<tr><td colspan="4">Esperando inicio...</td></tr>';
+        }
+
+        // Soporte para Enter en los campos
+        document.getElementById('dedoInicial').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('secuenciaMIDI').focus();
+            }
+        });
+
+        document.getElementById('secuenciaMIDI').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                iniciarPrediccion();
+            }
+        });
+    </script>
+</body>
+</html>

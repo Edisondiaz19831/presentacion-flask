@@ -1,2 +1,6 @@
 Flask
 gunicorn
+Werkzeug==2.3.6
+openpyxl==3.1.2
+pandas
+numpy

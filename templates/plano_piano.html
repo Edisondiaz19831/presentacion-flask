@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Plano cartesiano musical</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f4f4;
+        padding: 20px;
+    }
+
+    h2 {
+        text-align: center;
+    }
+
+    .contenedor {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+    .piano {
+        width: 90px;
+        position: relative;
+    }
+
+    .tecla {
+        height: 24px;
+        border: 1px solid #ccc;
+        background: white;
+        font-size: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 5px;
+        box-sizing: border-box;
+    }
+
+    .tecla.negra {
+        background: #111;
+        color: white;
+        width: 65px;
+    }
+
+    .plano {
+        position: relative;
+        width: 770px;
+        background: white;
+        border-left: 3px solid #333;
+        border-bottom: 3px solid #333;
+    }
+
+    .fila {
+        height: 24px;
+        border-top: 1px solid #e5e5e5;
+        position: relative;
+    }
+
+    .celda {
+        width: 70px;
+        height: 24px;
+        border-right: 1px solid #eee;
+        display: inline-block;
+        box-sizing: border-box;
+        cursor: pointer;
+    }
+
+    .celda:hover {
+        background: #eef6ff;
+    }
+
+    .punto {
+        width: 12px;
+        height: 12px;
+        background: crimson;
+        border-radius: 50%;
+        position: absolute;
+        transform: translate(-50%, -50%);
+    }
+
+    .etiqueta {
+        position: absolute;
+        font-size: 11px;
+        background: #fff8dc;
+        border: 1px solid #ccc;
+        padding: 2px 4px;
+        border-radius: 4px;
+        transform: translate(8px, -18px);
+        white-space: nowrap;
+    }
+
+    .eje-x {
+        display: flex;
+        margin-left: 90px;
+        justify-content: center;
+    }
+
+    .marca-x {
+        width: 70px;
+        text-align: center;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+    .panel {
+        margin: 25px auto;
+        width: 600px;
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+    }
+
+    code {
+        display: block;
+        margin-top: 10px;
+        background: #f0f0f0;
+        padding: 10px;
+    }
+</style>
+</head>
+
+<body>
+
+<h2>Plano cartesiano musical: tiempo, altura MIDI y digitación</h2>
+
+<div class="contenedor">
+
+    <div class="piano" id="piano"></div>
+
+    <div class="plano" id="plano"></div>
+
+</div>
+
+<div class="eje-x" id="ejeX"></div>
+
+<div class="panel">
+    <strong>Coordenadas seleccionadas:</strong>
+    <code id="salida">Haz clic en el plano...</code>
+</div>
+
+<script>
+    const midiMin = 48;
+    const midiMax = 72;
+    const tiempos = 11;
+
+    const piano = document.getElementById("piano");
+    const plano = document.getElementById("plano");
+    const ejeX = document.getElementById("ejeX");
+    const salida = document.getElementById("salida");
+
+    const notasNegras = [1, 3, 6, 8, 10];
+    const coordenadas = [];
+
+    function esNegra(midi) {
+        return notasNegras.includes(midi % 12);
+    }
+
+    function nombreNota(midi) {
+        const nombres = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+        const nota = nombres[midi % 12];
+        const octava = Math.floor(midi / 12) - 1;
+        return nota + octava;
+    }
+
+    for (let midi = midiMax; midi >= midiMin; midi--) {
+        const tecla = document.createElement("div");
+        tecla.className = "tecla";
+        if (esNegra(midi)) tecla.classList.add("negra");
+
+        tecla.innerHTML = `${nombreNota(midi)}<br>${midi}`;
+        piano.appendChild(tecla);
+
+        const fila = document.createElement("div");
+        fila.className = "fila";
+        fila.dataset.midi = midi;
+
+        for (let t = 1; t <= tiempos; t++) {
+            const celda = document.createElement("div");
+            celda.className = "celda";
+            celda.dataset.tiempo = t;
+            celda.dataset.midi = midi;
+
+            celda.addEventListener("click", function(e) {
+                const tiempo = this.dataset.tiempo;
+                const midi = this.dataset.midi;
+
+                let dedo = prompt(`Coordenada (${tiempo}, ${midi}, z)\nEscribe la digitación:`, "-");
+                if (dedo === null || dedo.trim() === "") dedo = "-";
+
+                const punto = document.createElement("div");
+                punto.className = "punto";
+                punto.style.left = ((tiempo - 1) * 70 + 35) + "px";
+                punto.style.top = "12px";
+
+                const etiqueta = document.createElement("div");
+                etiqueta.className = "etiqueta";
+                etiqueta.innerText = `(${tiempo}, ${midi}, ${dedo})`;
+                etiqueta.style.left = ((tiempo - 1) * 70 + 35) + "px";
+                etiqueta.style.top = "12px";
+
+                fila.appendChild(punto);
+                fila.appendChild(etiqueta);
+
+                coordenadas.push({
+                    tiempo: Number(tiempo),
+                    midi: Number(midi),
+                    digitacion: dedo
+                });
+
+                salida.innerText = JSON.stringify(coordenadas, null, 2);
+            });
+
+            fila.appendChild(celda);
+        }
+
+        plano.appendChild(fila);
+    }
+
+    for (let t = 1; t <= tiempos; t++) {
+        const marca = document.createElement("div");
+        marca.className = "marca-x";
+        marca.innerText = t;
+        ejeX.appendChild(marca);
+    }
+</script>
+
+</body>
+</html>
