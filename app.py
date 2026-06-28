@@ -1,5 +1,6 @@
 from flask import Flask, render_template, send_from_directory, request, jsonify, session
 from pathlib import Path
+from demo_hmm_asistido import registrar_scores
 import sqlite3
 import pandas as pd
 import traceback
@@ -7,6 +8,7 @@ import os
 import re
 
 app = Flask(__name__)
+registrar_scores(app)
 
 app.secret_key = os.environ.get("SECRET_KEY", "clave-secreta-por-defecto")
 
@@ -68,6 +70,18 @@ def markov_dedos():
 @app.route("/prior")
 def prior():
     return render_template("hmm_prior_inicial.html")
+
+@app.route("/transicion")
+def transicion():
+    return render_template("hmm_matriz_transicion.html")
+
+@app.route("/emision")
+def emision():
+    return render_template("hmm_matriz_emision.html")
+
+@app.route("/evaluacion")
+def evaluacion():
+    return render_template("evaluacion_hmm_asistido_unico.html")
 
 
 @app.route("/prueba_modelo")

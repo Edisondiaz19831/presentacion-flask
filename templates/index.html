@@ -85,12 +85,12 @@
 				<!-- main nav -->
                 <nav class="collapse navbar-collapse navbar-right" role="navigation">
                     <ul id="nav" class="nav navbar-nav">
-                        <li><a href="#body">Home</a></li>
-                        <li><a href="#service">Service</a></li>
-                        <li><a href="#portfolio">portfolio</a></li>
-                        <li><a href="#testimonials">Testimonial</a></li>
-                        <li><a href="#price">price</a></li>
-                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="#body">Inicio</a></li>
+                        <li><a href="#service">Fundamentos</a></li>
+                        <li><a href="#portfolio">Materiales y metodos   </a></li>
+                        <li><a href="#testimonials">Evaluacion del Modelo</a></li>
+                        <li><a href="#price">Metricas a usar</a></li>
+                       
                     </ul>
                 </nav>
 				<!-- /main nav -->
@@ -563,12 +563,12 @@
 							</li>
 							
 							<li class="portfolio-item">
-								<img src="img/portfolio/1item2.jpg" class="img-responsive" alt="Lorem Ipsum is simply dummy text of the printing and typesetting ndustry. ">
+								<img src="img/portfolio/1item2.jpg" class="img-responsive" alt="Capas información musical, pianística , contextual. ">
 
 
  <figcaption class="mask">
     <h3>Contextos Musicales</h3>
-    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+    <p>Observaciones posibles en un entorno musical.</p>
     <!-- 👇 Enlace que abre en nueva ventana -->
     <a href="{{ url_for('plano_piano') }}" target="_blank" class="btn btn-primary">Ver más</a>
 </figcaption>
@@ -582,10 +582,10 @@
 							</li>
 							
 							<li class="portfolio-item">
-								<img src="img/portfolio/1item3.jpg" class="img-responsive" alt="Lorem Ipsum is simply dummy text of the printing and typesetting ndustry. ">
+								<img src="img/portfolio/1item3.jpg" class="img-responsive" alt="Procurar acercar la información musical mendiante variables . ">
  <figcaption class="mask">
     <h3>Dataset</h3>
-    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+    <p>La idea es poder representar en un dataset esos contextos.</p>
     <!-- 👇 Enlace que abre en nueva ventana -->
     <a href="{{ url_for('visualizar_sqlite') }}" target="_blank" class="btn btn-primary">Ver más</a>
 </figcaption>
@@ -597,12 +597,12 @@
 							</li>
 							
 							<li class="portfolio-item">
-								<img src="img/portfolio/item4.jpg" class="img-responsive" alt="Lorem Ipsum is simply dummy text of the printing and typesetting ndustry.">
+								<img src="img/portfolio/item4.jpg" class="img-responsive" alt="Probabilidad dde usar cierto dedo si en la nota anterior se uso undedo en especifico.">
 
 
                                  <figcaption class="mask">
     <h3>Markov</h3>
-    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+    <p>Cadenas de Markov como modelo para expresar la digitación .</p>
     <!-- 👇 Enlace que abre en nueva ventana -->
     <a href="{{ url_for('markov_dedos') }}" target="_blank" class="btn btn-primary">Ver más</a>
 </figcaption>
@@ -615,12 +615,14 @@
 							</li>
 							
 							<li class="portfolio-item">
-								<img src="img/portfolio/item5.jpg" class="img-responsive" alt="Lorem Ipsum is simply dummy text of the printing and typesetting ndustry. ">
+								<img src="img/portfolio/item5.jpg" class="img-responsive" alt="De acuerdo a la teoría se usan las siguientes Matrices. ">
  <figcaption class="mask">
-    <h3>Dataset</h3>
-    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+    <h3>Modelos Ocultos de Markov HMM</h3>
+    <p>Elementos del Modelo.</p>
     <!-- 👇 Enlace que abre en nueva ventana -->
-    <a href="{{ url_for('prior') }}" target="_blank" class="btn btn-primary">Ver más</a>
+    <a href="{{ url_for('prior') }}" target="_blank" class="btn btn-primary">Ver prior</a>
+        <a href="{{ url_for('transicion') }}" target="_blank" class="btn btn-primary">Ver m_tra</a>
+            <a href="{{ url_for('emision') }}" target="_blank" class="btn btn-primary">Ver m_emis</a>
 </figcaption>
 
 								<ul class="external">
@@ -630,10 +632,16 @@
 							</li>
 							
 							<li class="portfolio-item">
-								<img src="img/portfolio/item6.jpg" class="img-responsive" alt="Lorem Ipsum is simply dummy text of the printing and typesetting ndustry. ">
+								<img src="img/portfolio/item6.jpg" class="img-responsive" alt="Cada que la cadena este en secuencia,al ubicar ambiguedades exista la posibilidad de ajustar de acuerdo a la realidad histórica. ">
  <figcaption class="mask">
-    <h3>Dataset</h3>
-    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+    <h3>Contraste para Ajustar</h3>
+    <p>El modelo por si solo puede ser útil , pero requiere de un algoritmo que le contraste para ajustar ambiguedades.</p>
+
+    <a href="{{ url_for('scores') }}"
+   target="_blank"
+   class="btn btn-primary">
+    Ver scores
+</a>
     <!-- 👇 Enlace que abre en nueva ventana -->
     <a href="{{ url_for('prueba_modelo') }}" target="_blank" class="btn btn-primary">Ver más</a>
 </figcaption>
@@ -649,115 +657,226 @@
 			</section>
 			<!-- end portfolio section -->
 			
-			<!-- Testimonial section -->
-			<section id="testimonials" class="parallax">
-				<div class="overlay">
-					<div class="container">
-						<div class="row">
-						
-							<div class="sec-title text-center white wow animated fadeInDown">
-								<h2>What people say</h2>
-							</div>
-							
-							<div id="testimonial" class=" wow animated fadeInUp">
-								<div class="testimonial-item text-center">
-									<img src="img/member-1.jpg" alt="Our Clients">
-									<div class="clearfix">
-										<span>Katty Flower</span>
-										<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-									</div>
-								</div>
-								<div class="testimonial-item text-center">
-									<img src="img/member-1.jpg" alt="Our Clients">
-									<div class="clearfix">
-										<span>Katty Flower</span>
-										<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-									</div>
-								</div>
-								<div class="testimonial-item text-center">
-									<img src="img/member-1.jpg" alt="Our Clients">
-									<div class="clearfix">
-										<span>Katty Flower</span>
-										<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-									</div>
-								</div>
-							</div>
-						
-						</div>
-					</div>
-				</div>
-			</section>
-			<!-- end Testimonial section -->
-			
-			<!-- Price section -->
-			<section id="price">
-				<div class="container">
-					<div class="row">
-					
-						<div class="sec-title text-center wow animated fadeInDown">
-							<h2>Price</h2>
-							<p>Our price for your company</p>
-						</div>
-						
-						<div class="col-md-4 wow animated fadeInUp">
-							<div class="price-table text-center">
-								<span>Silver</span>
-								<div class="value">
-									<span>$</span>
-									<span>24,35</span><br>
-									<span>month</span>
-								</div>
-								<ul>
-									<li>No Bonus Points</li>
-									<li>No Bonus Points</li>
-									<li>No Bonus Points</li>
-									<li>No Bonus Points</li>
-									<li><a href="#">sign up</a></li>
-								</ul>
-							</div>
-						</div>
-						
-						<div class="col-md-4 wow animated fadeInUp" data-wow-delay="0.4s">
-							<div class="price-table featured text-center">
-								<span>Gold</span>
-								<div class="value">
-									<span>$</span>
-									<span>50,00</span><br>
-									<span>month</span>
-								</div>
-								<ul>
-									<li>Free Trial</li>
-									<li>Free Trial</li>
-									<li>Free Trial</li>
-									<li>Free Trial</li>
-									<li><a href="#">sign up</a></li>
-								</ul>
-							</div>
-						</div>
-						
-						<div class="col-md-4 wow animated fadeInUp" data-wow-delay="0.8s">
-							<div class="price-table text-center">
-								<span>Diamond</span>
-								<div class="value">
-									<span>$</span>
-									<span>123,12</span><br>
-									<span>month</span>
-								</div>
-								<ul>
-									<li>All Bonus Points</li>
-									<li>All Bonus Points</li>
-									<li>All Bonus Points</li>
-									<li>All Bonus Points</li>
-									<li><a href="#">sign up</a></li>
-								</ul>
-							</div>
-						</div>
-		
-					</div>
-				</div>
-			</section>
-			<!-- end Price section -->
-			
+<!-- Testimonial section -->
+<section id="testimonials" class="parallax">
+    <div class="overlay">
+        <div class="container">
+            <div class="row">
+                
+                <div class="sec-title text-center white wow animated fadeInDown">
+                    <h2>Plan de Evaluación del Modelo</h2>
+                    <p class="subtitle">Configuración experimental para el reconocimiento de gestos con sensores</p>
+                </div>
+                
+                <div id="testimonial" class="wow animated fadeInUp">
+                    
+                    <!-- Tarjeta 1: Estructura de datos -->
+                    <div class="testimonial-item text-center">
+                        <div class="icon-circle">
+                            <i class="fa fa-hand-paper"></i>
+                        </div>
+                        <div class="clearfix">
+                            <span class="metric-title">Estructura de Datos</span>
+                            <div class="metric-details">
+                                <p><strong>Dedos evaluados:</strong> <span class="highlight">5</span> (Pulgar, Índice, Medio, Anular, Meñique)</p>
+                                <p><strong>Variable:</strong> <code>DEDOS = [1, 2, 3, 4, 5]</code></p>
+                                <p><strong>Secuencias por dedo:</strong> <span class="highlight">6</span> mediciones temporales</p>
+                                <p><strong>Variable:</strong> <code>LONGITUD_SECUENCIA = 6</code></p>
+                                <p><strong>Objetivo:</strong> Evaluar el reconocimiento de gestos para cada dedo</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tarjeta 2: Configuración experimental -->
+                    <div class="testimonial-item text-center">
+                        <div class="icon-circle">
+                            <i class="fa fa-sliders-h"></i>
+                        </div>
+                        <div class="clearfix">
+                            <span class="metric-title">Configuración Experimental</span>
+                            <div class="metric-details">
+                                <p><strong>Precisión numérica:</strong> <span class="highlight">ε = 0.001</span></p>
+                                <p><strong>Variable:</strong> <code>EPSILON = 0.001</code></p>
+                                <p><strong>Proporción de prueba:</strong> <span class="highlight">20%</span> del total</p>
+                                <p><strong>Variable:</strong> <code>TEST_SIZE = 0.20</code></p>
+                                <p><strong>Semilla aleatoria:</strong> <span class="highlight">42</span> (reproducibilidad)</p>
+                                <p><strong>Variable:</strong> <code>RANDOM_STATE = 42</code></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tarjeta 3: Métricas a evaluar -->
+                    <div class="testimonial-item text-center">
+                        <div class="icon-circle">
+                            <i class="fa fa-chart-bar"></i>
+                        </div>
+                        <div class="clearfix">
+                            <span class="metric-title">Métricas de Evaluación</span>
+                            <div class="metric-details">
+                                <p><strong>Exactitud (Accuracy):</strong> Porcentaje de aciertos global</p>
+                                <p><strong>Precisión por dedo:</strong> Rendimiento individual de cada dedo</p>
+                               
+                                <p><strong>Matriz de confusión:</strong> Errores entre dedos similares</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <!-- Pie de metodología -->
+                <div class="row metrics-footer">
+                    <div class="col-md-12 text-center">
+                        <p class="footer-note">
+                            <i class="fa fa-flask"></i> 
+                            <strong>Metodología:</strong> Entrenamiento con el <span class="highlight">80%</span> de los datos 
+                            y evaluación con el <span class="highlight">20%</span> restante. 
+                            Semilla fija (<code>RANDOM_STATE = 42</code>) para garantizar resultados reproducibles.
+                            Cada secuencia tendrá <span class="highlight">6</span> mediciones por dedo 
+                            (<code>LONGITUD_SECUENCIA = 6</code>).
+                        </p>
+                    </div>
+                </div>
+            
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end Testimonial section -->
+
+
+
+
+<!-- Results section -->
+<section id="price">
+    <div class="container">
+        <div class="row">
+        
+            <div class="sec-title text-center wow animated fadeInDown">
+                <h2>Métricas para  Evaluación</h2>
+                <p>Comparativa de precisión entre modelos de reconocimiento de gestos</p>
+            </div>
+            
+            <!-- Tarjeta 1: Accuracy HMM Local -->
+            <div class="col-md-4 wow animated fadeInUp">
+                <div class="price-table text-center">
+                    <span class="model-badge hmm-badge">HMM Local</span>
+  
+                    <div class="calculation-box">
+                        <h5><i class="fa fa-calculator"></i> Cálculo</h5>
+                        <code class="calc-code">acc_hmm = sum(a == b for a, b in zip(ruta_hmm, real)) / len(real)</code>
+                        <div class="example-box">
+                            <p><strong>Ejemplo:</strong></p>
+                            <p class="example-data">
+                                Real:  <span class="real-data">1 2 3 4 5 4</span><br>
+                                HMM:   <span class="hmm-data">1 2 3 2 5 4</span><br>
+                                <span class="result-icons">✓ ✓ ✓ ✗ ✓ ✓</span>
+                            </p>
+                            <p class="result-calculation">
+                                <strong>5 aciertos / 6 notas = <span class="highlight-result">83.3%</span></strong>
+                            </p>
+                            <p class="exact-match">
+                                <i class="fa fa-check-circle"></i> Exact Match: 
+                                <code>tuple(ruta_hmm) == tuple(real)</code> → <span class="false-result">0</span>
+                            </p>
+                        </div>
+                    </div>
+                    <ul>
+                        <li><i class="fa fa-check success-icon"></i> <strong>Ventaja:</strong> Rápido y eficiente</li>
+                        <li><i class="fa fa-info-circle info-icon"></i> <strong>Compara:</strong> ruta_hmm vs real</li>
+                        <li><i class="fa fa-bolt warning-icon"></i> <strong>Precisión:</strong> Buen balance</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Tarjeta 2: Accuracy Histórico Único -->
+            <div class="col-md-4 wow animated fadeInUp" data-wow-delay="0.4s">
+                <div class="price-table featured text-center">
+                    <span class="model-badge hist-badge">Histórico Único</span>
+
+                    <div class="calculation-box">
+                        <h5><i class="fa fa-calculator"></i> Cálculo</h5>
+                        <code class="calc-code">acc_hist = sum(a == b for a, b in zip(hist_unico, real)) / len(real)</code>
+                        <div class="example-box">
+                            <p><strong>Ejemplo:</strong></p>
+                            <p class="example-data">
+                                Real:       <span class="real-data">1 2 3 4 5 4</span><br>
+                                Histórico:  <span class="hist-data">1 2 3 4 5 4</span><br>
+                                <span class="result-icons">✓ ✓ ✓ ✓ ✓ ✓</span>
+                            </p>
+                            <p class="result-calculation">
+                                <strong>6 aciertos / 6 notas = <span class="highlight-result">100%</span></strong>
+                            </p>
+                            <p class="exact-match">
+                                <i class="fa fa-check-circle"></i> Exact Match: 
+                                <code>tuple(hist_unico) == tuple(real)</code> → <span class="true-result">1</span>
+                            </p>
+                        </div>
+                    </div>
+                    <ul>
+                        <li><i class="fa fa-check success-icon"></i> <strong>Ventaja:</strong> Coincidencia perfecta</li>
+                        <li><i class="fa fa-info-circle info-icon"></i> <strong>Compara:</strong> hist_unico vs real</li>
+                        <li><i class="fa fa-star star-icon"></i> <strong>Precisión:</strong> Excelente referencia</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Tarjeta 3: Accuracy Asistido -->
+            <div class="col-md-4 wow animated fadeInUp" data-wow-delay="0.8s">
+                <div class="price-table text-center">
+                    <span class="model-badge asist-badge">Asistido</span>
+
+                    <div class="calculation-box">
+                        <h5><i class="fa fa-calculator"></i> Cálculo</h5>
+                        <code class="calc-code">acc_asist = sum(a == b for a, b in zip(ruta_asistida, real)) / len(real)</code>
+                        <div class="example-box">
+                            <p><strong>Ejemplo:</strong></p>
+                            <p class="example-data">
+                                Real:      <span class="real-data">1 2 3 4 5 4</span><br>
+                                Asistido:  <span class="asist-data">1 2 3 4 5 4</span><br>
+                                <span class="result-icons">✓ ✓ ✓ ✓ ✓ ✓</span>
+                            </p>
+                            <p class="result-calculation">
+                                <strong>6 aciertos / 6 notas = <span class="highlight-result">100%</span></strong>
+                            </p>
+                            <p class="exact-match">
+                                <i class="fa fa-check-circle"></i> Exact Match: 
+                                <code>tuple(ruta_asistida) == tuple(real)</code> → <span class="true-result">1</span>
+                            </p>
+                        </div>
+                    </div>
+                    <ul>
+                        <li><i class="fa fa-check success-icon"></i> <strong>Ventaja:</strong> Mayor precisión</li>
+                        <li><i class="fa fa-info-circle info-icon"></i> <strong>Compara:</strong> ruta_asistida vs real</li>
+                        <li><i class="fa fa-rocket rocket-icon"></i> <strong>Precisión:</strong> Máxima confiabilidad</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Footer: Promedio general -->
+            <div class="col-md-12 text-center average-footer">
+                <div class="average-box">
+                    <h4><i class="fa fa-chart-line"></i> Accuracy Promedio General</h4>
+                    <div class="average-calculation">
+                        <p class="avg-formula">
+                            <code>df_res["accuracy_hmm_local"].mean()</code> → <span class="avg-result">83.3%</span>
+                        </p>
+                        <p class="avg-example">
+                            <strong>Ejemplo:</strong> (83.3% + 66.7% + 100%) / 3 = <span class="avg-result">83.3%</span>
+                        </p>
+                        <p class="avg-note">
+                            <i class="fa fa-info-circle"></i> 
+                            <strong>Promedio:</strong> Se calcula sobre todas las secuencias evaluadas
+                        </p>
+                    </div>
+                </div>
+            </div>
+        
+        </div>
+    </div>
+</section>
+<!-- end Results section -->
+
+
 			<!-- Social section -->
 			<section id="social" class="parallax">
 				<div class="overlay">
@@ -765,14 +884,22 @@
 						<div class="row">
 						
 							<div class="sec-title text-center white wow animated fadeInDown">
-								<h2>FOLLOW US</h2>
-								<p>Beautifully simple follow buttons to help you get followers on</p>
+								<h2>RESULTADOS</h2>
+								<p>Los resultados para este experimento se dejan a continuación, así mismo los codigos y link de git hub para descarga de la base de datos</p>
 							</div>
 							
 							<ul class="social-button">
-								<li class="wow animated zoomIn"><a href="#"><i class="fa fa-thumbs-up fa-2x"></i></a></li>
-								<li class="wow animated zoomIn" data-wow-delay="0.3s"><a href="#"><i class="fa fa-twitter fa-2x"></i></a></li>
-								<li class="wow animated zoomIn" data-wow-delay="0.6s"><a href="#"><i class="fa fa-dribbble fa-2x"></i></a></li>							
+						<li class="wow animated zoomIn">
+    <a href="{{ url_for('evaluacion') }}" title="Ver evaluación del modelo">
+        <i class="fa fa-thumbs-up fa-2x"></i>
+    </a>
+</li>
+								
+                                <li class="wow animated zoomIn" data-wow-delay="0.3s"><a href="#"><i class="fa fa-twitter fa-2x"></i></a></li>
+								
+                                <li class="wow animated zoomIn" data-wow-delay="0.6s"><a href="#"><i class="fa fa-dribbble fa-2x"></i></a></li>							
+
+
 							</ul>
 							
 						</div>
@@ -781,86 +908,60 @@
 			</section>
 			<!-- end Social section -->
 			
-			<!-- Contact section -->
-			<section id="contact" >
-				<div class="container">
-					<div class="row">
-						
-						<div class="sec-title text-center wow animated fadeInDown">
-							<h2>Contact</h2>
-							<p>Leave a Message</p>
-						</div>
-						
-						
-						<div class="col-md-7 contact-form wow animated fadeInLeft">
-							<form action="#" method="post">
-								<div class="input-field">
-									<input type="text" name="name" class="form-control" placeholder="Your Name...">
-								</div>
-								<div class="input-field">
-									<input type="email" name="email" class="form-control" placeholder="Your Email...">
-								</div>
-								<div class="input-field">
-									<input type="text" name="subject" class="form-control" placeholder="Subject...">
-								</div>
-								<div class="input-field">
-									<textarea name="message" class="form-control" placeholder="Messages..."></textarea>
-								</div>
-						       	<button type="submit" id="submit" class="btn btn-blue btn-effect">Send</button>
-							</form>
-						</div>
-						
-						<div class="col-md-5 wow animated fadeInRight">
-							<address class="contact-details">
-								<h3>Contact Us</h3>						
-								<p><i class="fa fa-pencil"></i>Phoenix Inc.<span>PO Box 345678</span> <span>Little Lonsdale St, Melbourne </span><span>Australia</span></p><br>
-								<p><i class="fa fa-phone"></i>Phone: (415) 124-5678 </p>
-								<p><i class="fa fa-envelope"></i>website@yourname.com</p>
-							</address>
-						</div>
-			
-					</div>
-				</div>
-			</section>
-			<!-- end Contact section -->
-			
+<section class="separador-titulo">
+    <div class="container text-center">
+        <span>
+            Trabajo de Grado · 
+        </span>
+    </div>
+</section>
+
+
+            
+            <!-- Sección principal con fondo de pantalla -->
+<section id="hero" class="hero-section">
+    <div class="hero-bg"></div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <div class="hero-content">
+                
+
+                  
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 			<section id="google-map">
-				<div id="map-canvas" class="wow animated fadeInUp"></div>
+				
 			</section>
 		
 		</main>
 		
-		<footer id="footer">
-			<div class="container">
-				<div class="row text-center">
-					<div class="footer-content">
-						<div class="wow animated fadeInDown">
-							<p>newsletter signup</p>
-							<p>Get Cool Stuff! We hate spam!</p>
-						</div>
-						<form action="#" method="post" class="subscribe-form wow animated fadeInUp">
-							<div class="input-field">
-								<input type="email" class="subscribe form-control" placeholder="Enter Your Email...">
-								<button type="submit" class="submit-icon">
-									<i class="fa fa-paper-plane fa-lg"></i>
-								</button>
-							</div>
-						</form>
-						<div class="footer-social">
-							<ul>
-								<li class="wow animated zoomIn"><a href="#"><i class="fa fa-thumbs-up fa-3x"></i></a></li>
-								<li class="wow animated zoomIn" data-wow-delay="0.3s"><a href="#"><i class="fa fa-twitter fa-3x"></i></a></li>
-								<li class="wow animated zoomIn" data-wow-delay="0.6s"><a href="#"><i class="fa fa-skype fa-3x"></i></a></li>
-								<li class="wow animated zoomIn" data-wow-delay="0.9s"><a href="#"><i class="fa fa-dribbble fa-3x"></i></a></li>
-								<li class="wow animated zoomIn" data-wow-delay="1.2s"><a href="#"><i class="fa fa-youtube fa-3x"></i></a></li>
-							</ul>
-						</div>
-						
-						<p>Copyright &copy; 2014-2015 Design and Developed By<a href="http://www.themefisher.com">Themefisher</a> </p>
-					</div>
-				</div>
-			</div>
-		</footer>
+<footer id="footer">
+    <div class="container text-center">
+
+        <h4>
+            Inferencia Probabilística de Digitaciones Pianísticas
+        </h4>
+
+        <p>
+            Un enfoque asistido mediante Modelos Ocultos de Markov
+        </p>
+
+        <p>
+            Trabajo de Grado · Especialización en Matemática Aplicada
+        </p>
+
+        <small>
+            Edison Díaz · 2026
+        </small>
+
+    </div>
+</footer>
 		
 		<!-- Essential jQuery Plugins
 		================================================== -->

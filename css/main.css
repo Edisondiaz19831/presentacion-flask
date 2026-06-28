@@ -1440,3 +1440,293 @@ textarea.form-control {
         width: 380px;
     }
 }
+
+/* Estilos para la sección de resultados */
+.model-badge {
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+.hmm-badge {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.hist-badge {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+}
+
+.asist-badge {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+.accuracy-number {
+    font-size: 48px;
+    font-weight: 800;
+    color: #2c3e50;
+}
+
+.percent-sign {
+    font-size: 30px;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.accuracy-label {
+    display: block;
+    font-size: 14px;
+    color: #7f8c8d;
+    margin-top: -5px;
+}
+
+.calculation-box {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 15px;
+    margin: 15px 0;
+    text-align: left;
+}
+
+.calculation-box h5 {
+    font-size: 14px;
+    color: #34495e;
+    margin-bottom: 10px;
+}
+
+.calculation-box h5 i {
+    margin-right: 8px;
+    color: #667eea;
+}
+
+.calc-code {
+    display: block;
+    background: #2c3e50;
+    color: #2ecc71;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    margin-bottom: 12px;
+    font-family: 'Courier New', monospace;
+    word-break: break-all;
+}
+
+.example-box {
+    background: white;
+    border-radius: 8px;
+    padding: 12px;
+    border-left: 3px solid #667eea;
+}
+
+.example-box p {
+    margin: 5px 0;
+    font-size: 13px;
+}
+
+.example-data {
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.real-data {
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+.hmm-data {
+    color: #667eea;
+    font-weight: 700;
+}
+
+.hist-data {
+    color: #f5576c;
+    font-weight: 700;
+}
+
+.asist-data {
+    color: #4facfe;
+    font-weight: 700;
+}
+
+.result-icons {
+    font-size: 18px;
+    letter-spacing: 8px;
+}
+
+.result-calculation {
+    background: #ecf0f1;
+    padding: 8px;
+    border-radius: 6px;
+    margin-top: 8px;
+    text-align: center;
+}
+
+.highlight-result {
+    color: #27ae60;
+    font-weight: 800;
+    font-size: 16px;
+}
+
+.exact-match {
+    background: #fff3cd;
+    padding: 8px;
+    border-radius: 6px;
+    margin-top: 8px;
+    font-size: 13px;
+    border-left: 3px solid #ffc107;
+}
+
+.exact-match i {
+    color: #ffc107;
+}
+
+.true-result {
+    color: #27ae60;
+    font-weight: 800;
+}
+
+.false-result {
+    color: #e74c3c;
+    font-weight: 800;
+}
+
+.success-icon {
+    color: #27ae60;
+}
+
+.info-icon {
+    color: #3498db;
+}
+
+.warning-icon {
+    color: #f39c12;
+}
+
+.star-icon {
+    color: #f1c40f;
+}
+
+.rocket-icon {
+    color: #e74c3c;
+}
+
+.price-table ul li {
+    font-size: 13px;
+    padding: 8px 0;
+}
+
+.price-table ul li i {
+    margin-right: 8px;
+}
+
+/* Footer de promedio */
+.average-footer {
+    margin-top: 40px;
+}
+
+.average-box {
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    border-radius: 15px;
+    padding: 25px 30px;
+    color: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.average-box h4 {
+    margin-bottom: 15px;
+}
+
+.average-box h4 i {
+    margin-right: 10px;
+    color: #f1c40f;
+}
+
+.average-calculation {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.avg-formula {
+    background: rgba(255,255,255,0.1);
+    padding: 10px 20px;
+    border-radius: 8px;
+    margin: 0;
+}
+
+.avg-formula code {
+    background: rgba(255,255,255,0.15);
+    padding: 4px 12px;
+    border-radius: 4px;
+    color: #2ecc71;
+}
+
+.avg-result {
+    color: #f1c40f;
+    font-weight: 800;
+    font-size: 18px;
+}
+
+.avg-example {
+    background: rgba(255,255,255,0.08);
+    padding: 10px 20px;
+    border-radius: 8px;
+    margin: 0;
+}
+
+.avg-note {
+    background: rgba(255,255,255,0.05);
+    padding: 10px 20px;
+    border-radius: 8px;
+    margin: 0;
+    font-size: 14px;
+}
+
+.avg-note i {
+    color: #3498db;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .accuracy-number {
+        font-size: 36px;
+    }
+    
+    .calc-code {
+        font-size: 10px;
+    }
+    
+    .example-data {
+        font-size: 12px;
+    }
+    
+    .average-calculation {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+#footer {
+    background: #111827;
+    color: #ffffff;
+    padding: 40px 0;
+}
+
+#footer h4 {
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+#footer p {
+    margin-bottom: 8px;
+    color: #d1d5db;
+}
+
+#footer small {
+    color: #9ca3af;
+}
